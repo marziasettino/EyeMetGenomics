@@ -180,7 +180,7 @@ Create_bacteria<- function(path){
 #' @param target is the target dataset
 #' @import stats
 #' @export
-#' @return list
+#' @return dataframe
 wilcox.test.bacteria <- function(tar.bact, target) {  
   k <- which(colnames(tar.bact) == target)
   nl <- ncol(tar.bact)
@@ -206,7 +206,10 @@ wilcox.test.bacteria <- function(tar.bact, target) {
     
   }
   
-  return(myList)
+  
+  df <- as.data.frame(unlist(myList))
+  
+  return(df)
 }
 
 bacteria_normal <- function(bacteria) {  
