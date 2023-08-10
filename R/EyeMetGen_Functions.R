@@ -181,7 +181,7 @@ Create_bacteria<- function(path){
 #' @import stats
 #' @export
 #' @return dataframe
-wilcox.test.bacteria <- function(tar.bact, target) {  
+wilcox_test_bacteria <- function(tar.bact, target) {  
   k <- which(colnames(tar.bact) == target)
   nl <- ncol(tar.bact)
   
