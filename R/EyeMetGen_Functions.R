@@ -169,6 +169,14 @@ Create_bacteria<- function(path){
 }
 
 
+
+#' @title wilcox.test.bacteria
+#' @description wilcox test
+#' @param tar.bact is the full dataset (target+bacteria)
+#' @param target is the target dataset
+#' @import stats
+#' @export
+#' @return list
 wilcox.test.bacteria <- function(tar.bact, target) {  
   k <- which(colnames(tar.bact) == target)
   nl <- ncol(tar.bact)
