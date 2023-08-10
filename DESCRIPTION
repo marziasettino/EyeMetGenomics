@@ -4,7 +4,7 @@ Title: R package for EyeMetGenomics
 Version: 1.0.0
 Author: Marzia Settino
 Maintainer: Marzia Settino <marzia.settino@unical.it>
-Description: MMRFVariant is developed with the aim of dealing 
+Description: EyeMetGenomics is developed with the aim of dealing 
              with EyeMetGenomics dataset.
 License: GPL (>= 3)
 Encoding: UTF-8
