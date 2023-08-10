@@ -142,8 +142,10 @@ Create_bacteria<- function(path){
   #Create dataframe bacteria
   Taxonomy <- data.frame(colnames(genus))
   
-  Taxonomy <- Taxonomy %>%
-    mutate(id =paste("bacteria", rownames(Taxonomy), sep = ""))
+  #Taxonomy <- Taxonomy %>%
+  #  mutate(id =paste("bacteria", rownames(Taxonomy), sep = ""))
+  
+  Taxonomy <- mutate(Taxonomy,id =paste("bacteria", rownames(Taxonomy), sep = ""))
   
   colnames(Taxonomy)<- c("bacteria","id")
   
@@ -160,7 +162,9 @@ Create_bacteria<- function(path){
   
   
   #move position o column id to firts column
-  bacteria<-bacteria %>% relocate(id)
+  #bacteria<-bacteria %>% relocate(id)
+  bacteria<-relocate(bacteria,id)
+  
   
   #Get number of column of "id" to text
   bacteria.nc<-which(colnames(bacteria)=="id")
