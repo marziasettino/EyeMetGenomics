@@ -4,7 +4,7 @@
 \alias{balancing}
 \title{balancing}
 \usage{
-balancing(train_data, test_data, kappa = 1, dupSZ = 3, sd = 2023)
+balancing(train_data, test_data, kappa = 1, dupSZ = 20, sd = 2023)
 }
 \arguments{
 \item{train_data}{is the train set}

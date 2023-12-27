@@ -565,6 +565,7 @@ preprocess_split_dataset <- function(data_in_scope, sd=2023) {
   
   
   myList <- list(train_data,test_data)
+  names(myList) <-c("train_data","test_data")
   
   return(myList)
   
@@ -584,18 +585,18 @@ preprocess_split_dataset <- function(data_in_scope, sd=2023) {
 preprocess_split_dataset_age <- function(data_in_scope, sd=2023) {
   
   colnames(data_in_scope)[1] = "Target"
+  
+  med <- median(data_in_scope$Target)
+  data_in_scope$Target <- ifelse(data_in_scope$Target<med, 0, 1)
  
-#  data_in_scope["Target"] = cut(data_in_scope$Target, c(9, 17, 64, 100, Inf), 
-#                             c("Child", "Adolescent", "Adult", "Elderly"), 
-#                             include.lowest=TRUE)
-  
-  data_in_scope$Target<-age_groups(data_in_scope$Target, c(0, 20, 50))  
-  
-  data_in_scope$Target <- recode(data_in_scope$Target, 
-                                 "0-19" = "Young", 
-                                 "20-49"  = "Adult", 
-                                 "50+" = "Senior")
-  
+# 
+#   data_in_scope$Target<-age_groups(data_in_scope$Target, c(0, 20, 50))  
+#   
+#   data_in_scope$Target <- recode(data_in_scope$Target, 
+#                                  "0-19" = "Young", 
+#                                  "20-49"  = "Adult", 
+#                                  "50+" = "Senior")
+#   
   
   # Split data into train and test data 
   set.seed(sd)
@@ -644,16 +645,18 @@ preprocess_split_dataset_bmi <- function(data_in_scope, sd=2023) {
   colnames(data_in_scope)[1] = "Target"
   
   
+  med <- median(data_in_scope$Target)
   
-  data_in_scope$Target <- bmi_cat(data_in_scope$Target)
- 
-   data_in_scope$Target <- recode(data_in_scope$Target, 
-                                  "Underweight" = "Normal", 
-                                  "Normal weight"  = "Normal", 
-                                  "Overweight" = "Overweight",
-                                  "Obesity class I"="Overweight",
-                                  "Obesity class II"="Overweight",
-                                  "Obesity class III"="Overweight")
+  data_in_scope$Target <- ifelse(data_in_scope$Target<med, 0, 1)
+  
+  # data_in_scope$Target <- bmi_cat(data_in_scope$Target)
+  # data_in_scope$Target <- recode(data_in_scope$Target, 
+  #                                 "Underweight" = "Normal", 
+  #                                 "Normal weight"  = "Normal", 
+  #                                 "Overweight" = "Overweight",
+  #                                 "Obesity class I"="Overweight",
+  #                                 "Obesity class II"="Overweight",
+  #                                 "Obesity class III"="Overweight")
    
   
   
@@ -1109,18 +1112,17 @@ getIMR <- function(df){ #N_majority/N_minority
 #' @param test_data is the test set
 #' @param kappa is the k parameter of smote function
 #' @param dupSZ is the dup_size parameter of smote function
-#' @import ROSE
 #' @import smotefamily
 #' @export
 #' @return list
 
 #balancing<- function(DF,targets,kappa=1,dupSZ=3){
-balancing<- function(train_data,test_data,kappa=1,dupSZ=3, sd=2023){
+balancing<- function(train_data,test_data,kappa=1,dupSZ=20, sd=2023){
   
   balanced_train <- vector(mode = "list", length = 3)
   names(balanced_train) <-c("train_data","test_data","IMR")
   set.seed(sd)
- print(paste0("kappa=",kappa," dupSZ=",dupSZ))
+# print(paste0("kappa=",kappa," dupSZ=",dupSZ))
   
   # is_unbalanced_target <- vector(mode = "list", length = 5)
   # names(is_unbalanced_target) <-c("train_data","test_data","train_prop","test_prop","IMR")
@@ -1129,8 +1131,9 @@ balancing<- function(train_data,test_data,kappa=1,dupSZ=3, sd=2023){
     # train_data <- DF[[i]][[1]] 
     # test_data <- DF[[i]][[2]] 
     
-    
-    if(getIMR(train_data)>2){
+imr <- getIMR(train_data)  
+  
+    if(imr>2){
       #unbalanced <- TRUE
     #  train_data <- ovun.sample(Target~., data = train_data, 
     #                            method = "over", seed=1)$data
@@ -1144,11 +1147,19 @@ balancing<- function(train_data,test_data,kappa=1,dupSZ=3, sd=2023){
     train_data_smote <- smote_result$data
     
     names(train_data_smote)[names(train_data_smote) == "class"] <- "Target"
+    imr <- getIMR(train_data_smote)
+    if(imr<=2){
+      train_data <-train_data_smote
+    }else{
+      print(paste0("IMR=",imr," (kappa=",kappa," dupSZ=",dupSZ,").  Let's change Kappa and dupSZ!"))
+    }  
+ }      
+      balanced_train[["train_data"]] <-train_data
+      balanced_train[["test_data"]] <-test_data
+      balanced_train[["IMR"]] <-imr
+  
     
-       if(getIMR(train_data_smote)<=2){
-          train_data <- train_data_smote
-        }    
-    }   
+
     
     # is_unbalanced_target[["train_data"]] <-train_data
     # is_unbalanced_target[["test_data"]] <-test_data
@@ -1160,9 +1171,7 @@ balancing<- function(train_data,test_data,kappa=1,dupSZ=3, sd=2023){
    # is_unbalanced_list[[trg]] <- is_unbalanced_target    
     
     
-  balanced_train[["train_data"]] <-train_data
-  balanced_train[["test_data"]] <-test_data
-  balanced_train[["IMR"]] <-getIMR(train_data)
+ 
   
   return(balanced_train)
   

@@ -13,18 +13,19 @@ library("dplyr")
 path<-file.path(getwd())
 pathToLoad <- paste0(path,"/data/Split_RC/balancedList.rda")  # balanced dataset
   
-filenmModels <- "TargetmodelsToCompare_23_dic_2023.rda"
+filenmModels <- "TargetmodelsToCompare_27_dic_2023.rda"
 pathToLoadModels<-paste0(path,"/data/CompareModels/",filenmModels)  
   
-filenmAUC <- "TargetmodelsAUCToCompare_23_dic_2023.rda"
+filenmAUC <- "TargetmodelsAUCToCompare_27_dic_2023.rda"
 pathToLoadAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
   
 #------------------- variable and lists ------------------------------------
 #REMOVED: "ipertension","reflux","sport", "etnicity"
 
-targets <- c("smoking","computer","glasses","sex","nationality",
-              "hemisphere","continent","reflux","sport","age")
 
+targets <- c("smoking","computer","glasses","sex","allergy",
+             "nationality","hemisphere","continent",
+             "reflux","sport","age")
 
 
 #targets <- c("smoking","computer","glasses","sex","allergy",
@@ -122,7 +123,8 @@ RocPlotList[[trg]] <- plot_bestModelROC(trg,bestModelsList, balancedList)
 
 for(i in 1:length(CMPlotList)) { 
   trg <- names(CMPlotList)[i]
-  CMPlotList[[i]] <- plot_bestModelConfusionMatrix(trg,bestModelsList, balancedList)
+  CMPlotList[[i]] <- plot_bestModelConfusionMatrix(trg,bestModelsList, 
+                                                   balancedList)
   
 }  
 

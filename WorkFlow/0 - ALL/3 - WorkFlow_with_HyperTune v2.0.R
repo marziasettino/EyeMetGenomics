@@ -29,8 +29,7 @@ tic.clearlog()
 
 
 targets <- c("smoking","computer","glasses","sex","allergy",
-             "nationality","hemisphere","continent",
-             "reflux","sport","etnicity","age")
+             "nationality","hemisphere","continent","sport","age")
 
 
 
@@ -48,10 +47,10 @@ path<-file.path(getwd())
 
 pathToLoad <- paste0(path,"/data/Split_RC/RC_datasetList.rda")  
 
-filenmModels <- "TargetmodelsToCompare_23_dic_2023.rda"
+filenmModels <- "TargetmodelsToCompare_27_dic_2023.rda"
 pathToSaveModels<-paste0(path,"/data/CompareModels/",filenmModels)  
 
-filenmAUC <- "TargetmodelsAUCToCompare_23_dic_2023.rda"
+filenmAUC <- "TargetmodelsAUCToCompare_27_dic_2023.rda"
 pathToSaveAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
 
 filenmBalencedList <- "balancedList.rda"

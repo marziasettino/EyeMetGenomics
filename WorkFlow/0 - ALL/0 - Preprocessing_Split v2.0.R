@@ -49,6 +49,7 @@ tar.bact.continent <- get_target_df(tar.bact,"continent")
 tar.bact.hemisphere <- get_target_df(tar.bact,"hemisphere")
 tar.bact.reflux <- get_target_df(tar.bact,"reflux")
 tar.bact.etnicity <- get_target_df(tar.bact,"etnicity")
+#----- Not categorical variables as outcome=>categorized------
 tar.bact.age <- get_target_df(tar.bact,"age")
 tar.bact.bmi <- get_target_df(tar.bact,"bmi")
 
