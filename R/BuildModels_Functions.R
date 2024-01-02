@@ -28,6 +28,7 @@ random_forest_model<- function(train_data, ctrl, sd=2023){
                                   metric="ROC", 
                                   importance = "impurity",
                                   tuneGrid=tuneGrid, 
+                                  #preProcess =c("nzv", "center", "scale", "knnImpute"),
                                   trControl=ctrl)
 
 return(ranger_fit)  
@@ -73,6 +74,7 @@ set.seed(sd)
                                  metric = "ROC",
                                  trControl=ctrl,
                                  tuneGrid = tunegrid.xgtree,
+                                 preProcess =c("nzv", "center", "scale", "knnImpute"),
                                  method = "xgbTree")
   
   return(xgtree_model)  
@@ -109,6 +111,7 @@ knn_model <-  caret::train(Target ~ .,
                            method = "knn",
                            trControl = ctrl,
                            tuneGrid = knnGrid,
+                           #preProcess =c("nzv", "center", "scale", "knnImpute"),
                            metric = "ROC",
                            tuneLength = 7)
   
@@ -148,6 +151,7 @@ svmRadialFit <- caret::train(Target ~ .,
                              method="svmRadial", 
                              metric="ROC", 
                              tuneGrid=tuneGr, 
+                             #preProcess =c("nzv", "center", "scale", "knnImpute"),
                              trControl=ctrl)
   
   
@@ -183,7 +187,9 @@ NaiveBayesFit <-  caret::train(Target ~ .,
                                method = 'naive_bayes',
                                trControl = ctrl,
                                metric = "ROC",
-                               tuneGrid = Grid)
+                               #preProcess =c("nzv", "center", "scale", "knnImpute"),
+                               tuneGrid = Grid
+                               )
   
   
   return(NaiveBayesFit)  
@@ -211,6 +217,7 @@ glmnet_model<- function(train_data, ctrl, sd=2023){
                                method = "glmnet",
                                metric = "ROC",
                                tuneGrid = myGrid, 
+                               #preProcess =c("nzv", "center", "scale", "knnImpute"),
                                trControl = ctrl)
   
   

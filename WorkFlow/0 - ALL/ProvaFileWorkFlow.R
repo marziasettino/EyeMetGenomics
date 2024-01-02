@@ -16,8 +16,7 @@ library(naivebayes)
 #library(RWeka)
 library(smotefamily)
 
-library(parallel)
-library(doParallel)
+
 
 
 #####################################
@@ -28,11 +27,10 @@ library(doParallel)
 #Clear the Timing log
 tic.clearlog()
 
-
+#"continent", #no continent for rfe
 targets <- c("smoking","computer","glasses","sex",
-             "nationality","hemisphere","continent", #no continent for rfe
-             "ipertension","reflux", "sport","age","bmi")
-
+             "nationality","hemisphere", "ipertension",
+             "reflux", "sport","age","bmi")
 
 
 TargetmodelsAUCToCompare <- vector(mode = "list", length = length(targets))
@@ -45,7 +43,8 @@ names(TargetmodelsToCompare) <-targets
 
 
 
-#setwd("../..")
+######.   setwd("../..")
+
 path<-file.path(getwd())
 
 
@@ -57,8 +56,15 @@ filenmAUC <- "RFE_TargetmodelsAUCToCompare_02_Gen_2024.rda"
 pathToSaveAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
 
 #filenmBalencedList <- "balancedList.rda"
-filenmBalencedList <- "RFE_balancedList.rda"
-pathToLoadbalancedList<-paste0(path,"/data/Split_FS_Bal/",filenmBalencedList) 
+filenmBalencedList <- "balancedList_RFE_31_dic.rda"
+pathToLoadbalancedList<-paste0(path,"/data/Split_RC/",filenmBalencedList) 
+
+
+# load(pathToLoad)
+# message("Dataset loaded from",  pathToLoad)
+# 
+# obj <- paste0("RC_DatasetsList")
+# DF <- get(obj)
 
 
 load(pathToLoadbalancedList)
@@ -70,20 +76,30 @@ obj <- paste0("balancedList_RFE")
 balancedList <- get(obj)
  
  
-   
+ 
+##################################################################
+ #  Balancing
+###################################################################
+# balancedList <- vector(mode = "list", length = length(targets))
+# names(balancedList) <-targets
+#  
+# for(i in 1:length(DF)) { 
+#   train_data <- DF[[i]][[1]] 
+#   test_data <- DF[[i]][[2]] 
+#  
+# balancedList[[i]]<- balancing(train_data,1,3) 
+#  
+# 
+# }
+# 
+# save(balancedList, file = pathToSavebalancedList)
+# message(paste("balancedList saved in: ", pathToSavebalancedList))  
 
 
-########################### 
-# Check how many cores you have to work with
-detectCores()
+ 
+################# BALENCED IN OTHER FILE ######################################################################
 
-# Set the number of clusters caret has to work with
-#cl <- makePSOCKcluster(detectCores() - 1) # Creates number of clusters = cores-1
-cl <- makePSOCKcluster(8)  # Create 8 clusters
-registerDoParallel(cl)
-getDoParWorkers()
 
-########################### 
 
  
 #for(i in 1:length(balancedList)) { 
@@ -334,15 +350,6 @@ modelsForTarget <- list(rf_fit,
 TargetmodelsToCompare[[i]] <- modelsForTarget
 
 } #end for
-
-
-
-
-
-########## Turn off the parallel processing once you're finished with it
-stopCluster(cl)
-registerDoSEQ()
-########## 
 
 
 save(TargetmodelsToCompare, file = pathToSaveModels)

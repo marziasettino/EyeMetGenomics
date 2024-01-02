@@ -35,7 +35,7 @@ names(TargetmodelsToCompare) <-targets
 
 path<-file.path(getwd())
 
-pathToLoad <- paste0(path,"/data/Split_RC/RC_datasetList.rda")  
+pathToLoad <- paste0(path,"/data/Split_FS_Bal/RC_datasetList.rda")  
 
 filenmModels <- "TargetmodelsToCompare_20_dic_2023.rda"
 pathToSaveModels<-paste0(path,"/data/CompareModels/",filenmModels)  
@@ -44,7 +44,7 @@ filenmAUC <- "TargetmodelsAUCToCompare_20_dic_2023.rda"
 pathToSaveAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
 
 filenmBalencedList <- "BalancedList.rda"
-pathToLoadBalancedList<-paste0(path,"/data/Split_RC/",filenmBalencedList)
+pathToLoadBalancedList<-paste0(path,"/data/Split_FS_Bal/",filenmBalencedList)
 
 
 load(pathToLoad)

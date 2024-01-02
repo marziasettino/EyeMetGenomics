@@ -4,9 +4,11 @@ library(EyeMetGenomics)
 
 
 path<-file.path(getwd())
-pathToLoad_UnbalancedData <- paste0(path,"/data/Split_RC/RC_datasetList.rda")  #not balanced dataset
+pathToLoad_UnbalancedData <- paste0(path,"/data/Split_FS_Bal/RC_datasetList.rda")  #not balanced dataset
 
-pathToLoad_BalancedData <- paste0(path,"/data/Split_RC/BalancedList.rda")
+#pathToLoad_BalancedData <- paste0(path,"/data/Split_FS_Bal/RC_balancedList.rda")
+pathToLoad_BalancedData <- paste0(path,"/data/Split_FS_Bal/RFE_balancedList.rda")
+
 
 load(pathToLoad_UnbalancedData)
 message("Dataset loaded from",  pathToLoad_UnbalancedData)
@@ -78,8 +80,8 @@ for(i in 1:length(DF_balanced)) {
 
 
 
-path1 <- paste0("~/MyDir/EyeMetGenomics/data/Split_RC/split_size_list_unbalanced.rda")
-path2 <- paste0("~/MyDir/EyeMetGenomics/data/Split_RC/split_size_list_balanced.rda")
+path1 <- paste0("~/MyDir/EyeMetGenomics/data/Split_FS_Bal/split_size_list_unbalanced.rda")
+path2 <- paste0("~/MyDir/EyeMetGenomics/data/Split_FS_Bal/split_size_list_balanced.rda")
 
 save(split_size_list_unbalanced, file = path1)
 message(paste("split_size_list_unbalanced saved in: ", path1)) 

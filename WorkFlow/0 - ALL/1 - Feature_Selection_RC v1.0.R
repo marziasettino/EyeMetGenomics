@@ -17,7 +17,7 @@ filenmPrepocessed <- "preprocessedDataset.RData"
 pathToLoadPreprocessed<-paste0(path,"/data/Preprocessed/",filenmPrepocessed)  
 
 filenmFS <- "RC_datasetList.rda"
-pathToSaveFS <- paste0(path,"/data/Split_RC/",filenmFS)
+pathToSaveFS <- paste0(path,"/data/Split_FS_Bal/",filenmFS)
 
 load(pathToLoadPreprocessed)
 
@@ -57,7 +57,7 @@ test_data <- test_data[, !(colnames(test_data) %in% highlyCorrelated)]
 
 
 
-#path_to_save_split <- paste0("~/MyDir/EyeMetGenomics/data/Split_RC/RC_",trg,".rda")
+#path_to_save_split <- paste0("~/MyDir/EyeMetGenomics/data/Split_FS_Bal/RC_",trg,".rda")
 #save(train_data,test_data, file = path_to_save_split)
 
 RC_dataset <- list(train_data,test_data)

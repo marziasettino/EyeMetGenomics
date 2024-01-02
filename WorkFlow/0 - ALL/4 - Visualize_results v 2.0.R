@@ -11,40 +11,32 @@ library("dplyr")
 
 #------------------- paths ------------------------------------
 path<-file.path(getwd())
-pathToLoad <- paste0(path,"/data/Split_RC/balancedList.rda")  # balanced dataset
+pathToLoadBalanced <- paste0(path,"/data/Split_FS_Bal/RFE_balancedList.rda")  # balanced dataset
+#pathToLoadBalanced <- paste0(path,"/data/Split_FS_Bal/RC_balancedList.rda") 
+
+filenmModels <- "RFE_TargetmodelsToCompare_02_Gen_2024.rda"
+pathToLoadBalancedModels<-paste0(path,"/data/CompareModels/",filenmModels)  
   
-filenmModels <- "TargetmodelsToCompare_27_dic_2023.rda"
-pathToLoadModels<-paste0(path,"/data/CompareModels/",filenmModels)  
-  
-filenmAUC <- "TargetmodelsAUCToCompare_27_dic_2023.rda"
-pathToLoadAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
+filenmAUC <- "RFE_TargetmodelsAUCToCompare_02_Gen_2024.rda"
+pathToLoadBalancedAUC<-paste0(path,"/data/CompareModels/",filenmAUC)  
   
 #------------------- variable and lists ------------------------------------
-#REMOVED: "ipertension","reflux","sport", "etnicity"
 
 
-targets <- c("smoking","computer","glasses","sex","allergy",
-             "nationality","hemisphere","continent",
-             "reflux","sport","age")
+targets <- c("smoking","computer","glasses","sex",
+             "nationality","hemisphere", "ipertension",
+             "reflux", "sport","age","bmi")
 
-
-#targets <- c("smoking","computer","glasses","sex","allergy",
-#             "nationality","hemisphere","continent",
- #            "reflux","sport","etnicity","age","bmi")
-
-#AGGIUNGERE AGE E BMI
-#targets <- c("smoking","computer","glasses","sex","allergy",
-#             "nationality","hemisphere","continent","age","bmi")
-
+targets <- c( "ipertension","reflux", "sport","age","bmi")
 
 
 
 bestModelsList <- vector(mode = "list", length = length(targets))
 names(bestModelsList) <-targets
 
-#pathToLoad <- paste0(pathToLoad,trg,".rda")
-load(pathToLoad)
-message(paste("RC_dataset loaded from: ", pathToLoad)) 
+#pathToLoadBalanced <- paste0(pathToLoadBalanced,trg,".rda")
+load(pathToLoadBalanced)
+message(paste("balancedList.rda loaded from: ", pathToLoadBalanced)) 
 
 
 RocPlotList <- vector(mode = "list", length = length(targets))
@@ -64,11 +56,11 @@ names(VipsList) <-targets
 
 ################################
 
-load(pathToLoadModels)
-message(paste("Loaded TargetmodelsToCompare from: ", pathToLoadModels)) 
+load(pathToLoadBalancedModels)
+message(paste("Loaded TargetmodelsToCompare from: ", pathToLoadBalancedModels)) 
 
-load(pathToLoadAUC)
-message(paste("Loaded TargetmodelsAUCToCompare from: ", pathToLoadAUC))   
+load(pathToLoadBalancedAUC)
+message(paste("Loaded TargetmodelsAUCToCompare from: ", pathToLoadBalancedAUC))   
 
 ######################################################################## 
 
@@ -112,11 +104,12 @@ for(i in 1:length(bestModelsList)) {
 
 for(i in 1:length(RocPlotList)) { 
   trg <- names(RocPlotList)[i]
+  print(paste0("Target=",trg))
  # RocPlotList[[i]] <- plot_bestModelROC(trg,bestModelsList, RC_DatasetsList)
-  RocPlotList[[i]] <- plot_bestModelROC(trg,bestModelsList, balancedList)
+  RocPlotList[[i]] <- plot_bestModelROC(trg,bestModelsList, balancedList_RFE)
 }  
 
-trg <- "sex"
+trg <- "age"
 RocPlotList[[trg]] <- plot_bestModelROC(trg,bestModelsList, balancedList)
 #----------------------Confusion Matrix --------
 

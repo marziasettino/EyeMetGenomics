@@ -522,11 +522,12 @@ draw_confusion_matrix <- function(cm, trg) {
 #' @param data_in_scope is the subset with respect the target
 #' @import rsample
 #' @import recipes
+#' @import dplyr
 #' @export
 #' @return list
 
 preprocess_split_dataset <- function(data_in_scope, sd=2023) {
-
+  trg <- colnames(data_in_scope)[1]
   colnames(data_in_scope)[1] = "Target"
   
   if(is.integer(data_in_scope$Target)){
@@ -536,160 +537,37 @@ preprocess_split_dataset <- function(data_in_scope, sd=2023) {
     }
 
   
-
-  
   
   # Split data into train and test data 
   set.seed(sd)
   
- # train_test_split_data <- initial_split(data_in_scope)
- # data_in_scope_train <- training(train_test_split_data)
- # data_in_scope_test <-  testing(train_test_split_data)
+
   
-  trainIndex <- createDataPartition(data_in_scope$Target, p = .6, 
+  trainIndex <- createDataPartition(data_in_scope$Target, 
+                                    p = .7, 
                                     list = FALSE, 
-                                    times = 1)
+                                    times = 3)
   
   data_in_scope_train <- data_in_scope[ trainIndex,]
   data_in_scope_test  <- data_in_scope[-trainIndex,]
   
-  print("Splitted")
-  rec <- preprocessing_recipes(data_in_scope_train)
-  
-  
-  train_data <- prep(rec) %>% 
-    juice()
-  
-  test_data <- prep(rec) %>% 
-    bake(data_in_scope_test)  
-  
-  
-  myList <- list(train_data,test_data)
-  names(myList) <-c("train_data","test_data")
-  
-  return(myList)
-  
-}  
-
-
-#' @title preprocess_split_dataset_age
-#' @description generate train and test for the target subset
-#' @param data_in_scope is the subset with respect the target
-#' @import rsample
-#' @import recipes
-#' @import dplyr
-#' @import AMR
-#' @export
-#' @return list
-
-preprocess_split_dataset_age <- function(data_in_scope, sd=2023) {
-  
-  colnames(data_in_scope)[1] = "Target"
-  
-  med <- median(data_in_scope$Target)
-  data_in_scope$Target <- ifelse(data_in_scope$Target<med, 0, 1)
  
-# 
-#   data_in_scope$Target<-age_groups(data_in_scope$Target, c(0, 20, 50))  
-#   
-#   data_in_scope$Target <- recode(data_in_scope$Target, 
-#                                  "0-19" = "Young", 
-#                                  "20-49"  = "Adult", 
-#                                  "50+" = "Senior")
-#   
-  
-  # Split data into train and test data 
-  set.seed(sd)
-  
-  # train_test_split_data <- initial_split(data_in_scope)
-  # data_in_scope_train <- training(train_test_split_data)
-  # data_in_scope_test <-  testing(train_test_split_data)
-  
-  trainIndex <- createDataPartition(data_in_scope$Target, p = .6, 
-                                    list = FALSE, 
-                                    times = 1)
-  
-  data_in_scope_train <- data_in_scope[ trainIndex,]
-  data_in_scope_test  <- data_in_scope[-trainIndex,]
-  
-  print("Splitted")
-  rec <- preprocessing_recipes(data_in_scope_train)
+  print(paste0("Splitting ",trg,"..."))
+ 
   
   
-  train_data <- prep(rec) %>% 
-    juice()
+  preProc <- preProcess(data_in_scope_train, 
+                               method = c("center","scale","spatialSign",
+                                          "nzv", "center", "scale", "knnImpute"))
   
-  test_data <- prep(rec) %>% 
-    bake(data_in_scope_test)  
-  
-  
-  myList <- list(train_data,test_data)
-  
-  return(myList)
-  
-}  
-
-
-#' @title preprocess_split_dataset_bmi
-#' @description generate train and test for the target subset
-#' @param data_in_scope is the subset with respect the target
-#' @import rsample
-#' @import recipes
-#' @import dplyr
-#' @import lvmisc
-#' @export
-#' @return list
-
-preprocess_split_dataset_bmi <- function(data_in_scope, sd=2023) {
-  
-  colnames(data_in_scope)[1] = "Target"
+  data_in_scope_train_transf <- predict(preProc, data_in_scope_train)
+  data_in_scope_test_transf <- predict(preProc,data_in_scope_test)  
   
   
-  med <- median(data_in_scope$Target)
-  
-  data_in_scope$Target <- ifelse(data_in_scope$Target<med, 0, 1)
-  
-  # data_in_scope$Target <- bmi_cat(data_in_scope$Target)
-  # data_in_scope$Target <- recode(data_in_scope$Target, 
-  #                                 "Underweight" = "Normal", 
-  #                                 "Normal weight"  = "Normal", 
-  #                                 "Overweight" = "Overweight",
-  #                                 "Obesity class I"="Overweight",
-  #                                 "Obesity class II"="Overweight",
-  #                                 "Obesity class III"="Overweight")
-   
-  
-  
-  
-  
-  
-  # Split data into train and test data 
-  set.seed(sd)
-  
-  # train_test_split_data <- initial_split(data_in_scope)
-  # data_in_scope_train <- training(train_test_split_data)
-  # data_in_scope_test <-  testing(train_test_split_data)
-  
-  trainIndex <- createDataPartition(data_in_scope$Target, p = .6, 
-                                    list = FALSE, 
-                                    times = 1)
-  
-  data_in_scope_train <- data_in_scope[ trainIndex,]
-  data_in_scope_test  <- data_in_scope[-trainIndex,]
-  
-  print("Splitted")
-  rec <- preprocessing_recipes(data_in_scope_train)
-  
-  
-  train_data <- prep(rec) %>% 
-    juice()
-  
-  test_data <- prep(rec) %>% 
-    bake(data_in_scope_test)  
-  
-  
-  myList <- list(train_data,test_data)
-  
+  myList <- list(data_in_scope_train_transf,data_in_scope_test_transf)
+  names(myList) <-c("train_data","test_data")
+ 
+    
   return(myList)
   
 }  
@@ -1055,7 +933,7 @@ return(list_size)
 #' @param pathToLoad path
 #' @export
 
-get_split_size_tabs_All <- function(pathToLoad="~/MyDir/EyeMetGenomics/data/Split_RC/RC_dataset.rda",
+get_split_size_tabs_All <- function(pathToLoad="~/MyDir/EyeMetGenomics/data/Split_FS_Bal/RC_dataset.rda",
                                     targets) {
   split_size_list <- vector(mode = "list", length = length(targets))
   names(split_size_list) <-targets

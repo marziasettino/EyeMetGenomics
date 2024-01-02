@@ -5,7 +5,7 @@
 \title{get_split_size_tabs_All}
 \usage{
 get_split_size_tabs_All(
-  pathToLoad = "~/MyDir/EyeMetGenomics/data/Split_RC/RC_dataset.rda",
+  pathToLoad = "~/MyDir/EyeMetGenomics/data/Split_FS_Bal/RC_dataset.rda",
   targets
 )
 }

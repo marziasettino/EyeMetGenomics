@@ -6,29 +6,33 @@ library(rsample)
 library(recipes)
 
 #----------------Preprocessing--------------
+path<-file.path(getwd())
 
-#target.path <- "/Users/marzia/MyDir/GenomicsData/data_raw/database_sani_ok2.xlsx"
-target.path <- "/Users/marzia/MyDir/GenomicsData/data_raw/database_sani_complete2.xlsx"
-bacteria.path <- "/Users/marzia/MyDir/GenomicsData/genus.csv"
 
-targets<-Create_targets(target.path)
+filenmToLoadTargets <- "database_sani_complete2.xlsx"
+pathToLoadTargets<-paste0(path,"/data/data_raw/",filenmToLoadTargets)  
+pathToLoadTargets
+
+filenmToLoadBacteria <- "genus.csv"
+pathToLoadBacteria<-paste0(path,"/data/data_raw/",filenmToLoadBacteria)  
+
+
+filenmToSavePreprocessedSplit <- "PreprocessedSplit_02_Gen_23.RData"
+pathToSavePreprocessedSplit<-paste0(path,"/data/Preprocessed/",filenmToSavePreprocessedSplit)  
+
+
+
+
+targets<-Create_targets(pathToLoadTargets)
 targets <- targets_to_numeric(targets)
-#remove incomplete targets (bmi has NA values)
-#targets <- na.omit(targets)
 
 
-bacteria<-Create_bacteria(bacteria.path)
+
+bacteria<-Create_bacteria(pathToLoadBacteria)
 
 #save(targets,bacteria, file = "data/originalDataset.rda")
 
-#remove columns with near zero variance
-#if a variable has very little change or variation, 
-#it's like a constant and not useful for prediction. 
-nzv_vals <- nearZeroVar(bacteria,names = FALSE)
 
-if(length(nzv_vals)>0){
-  bacteria <- bacteria[,-nzv_vals]
-}
 
 ########## MERGE #######################
 tar.bact<-merge(targets,bacteria, by = "id")
@@ -61,7 +65,7 @@ tar.bact.smoking <- preprocess_split_dataset(tar.bact.smoking)
 tar.bact.sex <- preprocess_split_dataset(tar.bact.sex)
 tar.bact.sport <- preprocess_split_dataset(tar.bact.sport)
 tar.bact.ipertension <- preprocess_split_dataset(tar.bact.ipertension)
-tar.bact.diabete <- preprocess_split_dataset(tar.bact.diabete)
+#tar.bact.diabete <- preprocess_split_dataset(tar.bact.diabete)
 tar.bact.computer <- preprocess_split_dataset(tar.bact.computer)
 tar.bact.glasses <- preprocess_split_dataset(tar.bact.glasses)
 tar.bact.nationality <- preprocess_split_dataset(tar.bact.nationality)
@@ -71,12 +75,12 @@ tar.bact.hemisphere <- preprocess_split_dataset(tar.bact.hemisphere)
 tar.bact.reflux <- preprocess_split_dataset(tar.bact.reflux)
 tar.bact.etnicity <- preprocess_split_dataset(tar.bact.etnicity)
 #----- Not categorical variables as outcome=>categorized------
-tar.bact.age <- preprocess_split_dataset_age(tar.bact.age)
-tar.bact.bmi <- preprocess_split_dataset_bmi(tar.bact.bmi)
+tar.bact.age <- preprocess_split_dataset(tar.bact.age)
+tar.bact.bmi <- preprocess_split_dataset(tar.bact.bmi)
 
 
 
-save.image("~/MyDir/EyeMetGenomics/data/Preprocessed/preprocessedDataset.RData")
+save.image(pathToSavePrepocessedSplit)
 
 
 # save(tar.bact.smoking,
